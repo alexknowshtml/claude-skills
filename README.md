@@ -1,33 +1,37 @@
 # Claude Skills
 
-A curated collection of Claude Code slash commands for professional AI-assisted workflows.
+A curated collection of Claude Code skills for professional AI-assisted workflows.
 
-These are battle-tested commands from a real production setup. Each one is designed to be copied into your own `.claude/commands/` directory and customized for your environment.
+These are battle-tested skills from a real production setup. Each one is a reusable prompt with full tool access — copy it into your project and it becomes a `/command` in any Claude Code session.
 
-## What's a Claude Skill?
+## What's a Skill?
 
-Claude Code supports custom slash commands — markdown files in `.claude/commands/` that act as reusable prompts with full tool access. Drop one in, and `/command-name` becomes available in any session.
+Skills are markdown files that live in `.claude/skills/<name>/SKILL.md` (or `.claude/commands/<name>.md` for simpler setups). They act as reusable, parameterized prompts with access to all Claude Code tools. Drop one in and invoke it with `/name`.
 
 ## Skills
 
 | Skill | Description |
 |-------|-------------|
-| [/reflect](./reflect.md) | Session retrospective — find friction, capture learnings, auto-implement quick wins |
-| [/pause](./pause.md) | Save session state and generate a return prompt (quick or full mode) |
+| [/reflect](./reflect/) | Session retrospective — find friction, capture learnings, auto-implement quick wins |
+| [/pause](./pause/) | Save session state and generate a return prompt (quick or full mode) |
 
 ## Installation
 
-Copy any skill file into your project's `.claude/commands/` directory:
+Each skill lives in its own directory. Copy the folder into your project:
 
 ```bash
-cp reflect.md /your-project/.claude/commands/reflect.md
+# As a skill (recommended)
+cp -r reflect /your-project/.claude/skills/reflect
+
+# Or as a simple command
+cp reflect/SKILL.md /your-project/.claude/commands/reflect.md
 ```
 
 Then invoke it in Claude Code with `/reflect`.
 
 ## Customization
 
-Each skill has a `## Configuration` section at the top. Replace the placeholder values with your own paths and preferences before using.
+Each `SKILL.md` has placeholder values (marked with `<angle-brackets>`) for paths and project-specific config. Replace these before using.
 
 ## More
 
