@@ -2,7 +2,7 @@
 description: Socratic teaching loop for any Claude Code session — quiz yourself on what actually happened, confirm mastery item by item, and don't finish until everything's locked in
 ---
 
-> **Credit:** Core teaching prompt adapted from [ThariqS's Socratic teaching gist](https://gist.github.com/ThariqS/1389dcdff9eba4789887a2211370f06b). Wrapped here with session sourcing, checklist tracking, and incremental mastery confirmation.
+> **Credit:** Original "Learn Quiz" prompt by **Suzanne** (Anthropic), shared by [@trq212](https://x.com/trq212/status/2061545633560010826). Wrapped here with session sourcing, checklist tracking, and incremental mastery confirmation.
 
 # /teach
 
