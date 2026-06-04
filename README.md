@@ -17,6 +17,7 @@ Skills are markdown files that live in `.claude/skills/<name>/SKILL.md` (or `.cl
 | [/upskill](./upskill/) | Scan current session for stale skills and new skill candidates, then apply updates |
 | [/create-skill](./create-skill/) | Turn a session into a reusable skill with research, planning, and approval flow |
 | [/pretty-page](./pretty-page/) | Convert markdown to a beautifully styled, shareable HTML page and upload to S3-compatible storage |
+| [/teach](./teach/) | Socratic teaching loop — quiz yourself on a session, confirm mastery item by item, don't finish until everything's locked in |
 
 ## Installation
 
