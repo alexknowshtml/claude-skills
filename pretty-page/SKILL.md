@@ -5,7 +5,7 @@ description: Convert markdown to a beautifully styled, shareable HTML page and u
 
 # /pretty-page — Convert Markdown to Styled HTML Page
 
-Convert markdown content into a beautifully styled, shareable HTML page using the Good Neighbors design system (Risograph-inspired aesthetic). Renders locally and uploads to any S3-compatible host.
+Convert markdown content into a beautifully styled, shareable HTML page using the JFDI design system (Risograph-inspired aesthetic). Renders locally and uploads to any S3-compatible host.
 
 ## Usage
 
@@ -155,7 +155,7 @@ The template ships CSS for a Gmail-style email card (`.gmail-card`):
 
 ## Interactive Animations
 
-For system documentation, architecture explanations, or any page where the **sequence or timing** is the point, you can add interactive JS animations. These are hand-authored in HTML rather than generated from markdown — build the page as a standalone `.html` file, use the Good Neighbors CSS variables (`--paper`, `--ink`, `--red`, `--blue`, `--yellow`, `--green`) and fonts, then upload directly.
+For system documentation, architecture explanations, or any page where the **sequence or timing** is the point, you can add interactive JS animations. These are hand-authored in HTML rather than generated from markdown — build the page as a standalone `.html` file, use the JFDI design system CSS variables (`--paper`, `--ink`, `--red`, `--blue`, `--yellow`, `--green`) and fonts, then upload directly.
 
 **Key JS rule:** All choreographed animations use `async/await` + `const sleep = ms => new Promise(r => setTimeout(r, ms))`. Never callback chains.
 
