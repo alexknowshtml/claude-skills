@@ -51,7 +51,7 @@ export S3_PUBLIC_BASE_URL=https://cdn.yourdomain.com
 
 ## Template
 
-The template uses the Good Neighbors design system:
+The template uses the JFDI design system:
 
 - **Fonts:** Fraunces (headings) + DM Sans (body) + DM Mono (code)
 - **Colors:** Cream paper (#F7F3ED), dark ink (#1C1C1C), red (#E63946), blue (#457B9D), yellow (#F4A261), green (#2A9D8F)
