@@ -30,6 +30,8 @@
       color: var(--ink);
       font-size: 15px;
       line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* Paper texture */
@@ -94,6 +96,7 @@
       line-height: 1.15;
       margin-bottom: 1.25rem;
       color: var(--ink);
+      text-wrap: balance;
     }
 
     /* Headings */
@@ -107,6 +110,7 @@
       color: var(--ink);
       border-bottom: 2px solid var(--ink);
       padding-bottom: 0.25rem;
+      text-wrap: balance;
     }
     h2:first-child { margin-top: 0; }
 
@@ -142,6 +146,7 @@
       margin-top: 1.75rem;
       margin-bottom: 0.5rem;
       color: var(--blue);
+      text-wrap: balance;
     }
 
     h4 {
@@ -154,11 +159,13 @@
       color: var(--ink);
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      text-wrap: balance;
     }
 
     /* Body text */
     p {
       margin-bottom: 1rem;
+      text-wrap: pretty;
     }
 
     strong {
@@ -279,6 +286,24 @@
     hr + h2 { margin-top: 0.5rem; }
     hr + h3 { margin-top: 0.25rem; }
 
+    /* Back-to-top link (auto-injected before <hr> on archive-style pages) */
+    .back-to-top {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 0.8em;
+      margin-top: 1rem;
+    }
+    .back-to-top a {
+      color: var(--ink);
+      opacity: 0.5;
+      text-decoration: none;
+      border: none;
+    }
+    .back-to-top a:hover {
+      opacity: 1;
+      color: var(--blue);
+    }
+
     /* Tables */
     table {
       width: 100%;
@@ -329,6 +354,72 @@
       margin-right: 0.15em;
     }
 
+    /* Float-right image utility */
+    .float-right {
+      float: right;
+      max-width: 260px;
+      margin: 0 0 1em 1.5em;
+      border-radius: 6px;
+      display: block;
+    }
+
+    /* Gmail-style email card */
+    .gmail-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      margin: 1.5rem 0 2rem 0;
+      font-family: "Google Sans", Arial, sans-serif;
+      overflow: hidden;
+    }
+    .gmail-header {
+      padding: 16px 24px 12px 24px;
+      border-bottom: 1px solid #e0e0e0;
+      background: #f8f9fa;
+    }
+    .gmail-subject {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #202124;
+      margin: 0 0 12px 0;
+      line-height: 1.2;
+    }
+    .gmail-meta {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .gmail-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #1a73e8;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .gmail-sender-info { flex: 1; }
+    .gmail-sender-name { font-weight: 600; color: #202124; font-size: 0.9rem; }
+    .gmail-sender-email { color: #5f6368; font-size: 0.8rem; }
+    .gmail-date { color: #5f6368; font-size: 0.8rem; white-space: nowrap; }
+    .gmail-to { color: #5f6368; font-size: 0.8rem; margin-top: 2px; }
+    .gmail-body {
+      padding: 24px;
+      color: #202124;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .gmail-body p { margin: 0 0 1em 0; }
+    .gmail-body ul { margin: 0.5em 0 1em 1.5em; padding: 0; }
+    .gmail-body li { margin-bottom: 0.4em; }
+    .gmail-body img { max-width: 100%; border-radius: 6px; margin: 1em 0; display: block; }
+    .gmail-body strong { font-weight: 600; }
+
     /* Mobile: table scroll wrapper */
     .table-wrapper {
       overflow-x: auto;
@@ -338,7 +429,7 @@
     }
     .table-wrapper table {
       margin: 0;
-      min-width: 500px;
+      min-width: 900px;
     }
 
     @media (max-width: 600px) {
@@ -412,12 +503,56 @@
         font-size: 0.75em;
       }
 
+      /* Float-right image: stack on mobile */
+      .float-right {
+        float: none;
+        max-width: 100%;
+        margin: 1em 0;
+        clear: both;
+      }
+
       /* Blockquote mobile */
       blockquote {
         margin-left: 0;
         margin-right: 0;
         padding: 0.6rem 0.75rem;
         box-shadow: 2px 2px 0 var(--ink);
+      }
+
+      /* .table-wrapper: scroll mode (overrides card layout above) */
+      .table-wrapper table, .table-wrapper thead, .table-wrapper tbody,
+      .table-wrapper th, .table-wrapper td, .table-wrapper tr { display: revert; }
+      .table-wrapper thead { position: static; width: auto; height: auto; clip: auto; overflow: visible; border: 0; }
+      .table-wrapper tbody { counter-reset: none; }
+      .table-wrapper tr { margin: 0; border: none; border-radius: 0; padding: 0; background: transparent; position: static; }
+      .table-wrapper tr::after { content: none; }
+      .table-wrapper td { padding: 0.4rem 0.5rem; font-size: 0.82em; font-weight: normal; border-bottom: 1px solid rgba(28,28,28,0.06); }
+      .table-wrapper td:first-child { font-weight: normal; font-size: 0.82em; border-bottom: 1px solid rgba(28,28,28,0.06); padding-bottom: 0.4rem; margin-bottom: 0; }
+      .table-wrapper tr:hover td { background: rgba(28,28,28,0.03); }
+
+      /* card-mode toggle: revert to stacking layout */
+      .table-wrapper.card-mode table, .table-wrapper.card-mode thead, .table-wrapper.card-mode tbody,
+      .table-wrapper.card-mode th, .table-wrapper.card-mode td, .table-wrapper.card-mode tr { display: block; }
+      .table-wrapper.card-mode thead { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+      .table-wrapper.card-mode tbody { counter-reset: row-num; }
+      .table-wrapper.card-mode tr { margin-bottom: 1rem; border: 1px solid rgba(28,28,28,0.12); border-radius: 4px; padding: 0.5rem; padding-bottom: 1.5rem; background: rgba(28,28,28,0.02); position: relative; counter-increment: row-num; }
+      .table-wrapper.card-mode tr::after { content: "#" counter(row-num); position: absolute; bottom: 0.35rem; right: 0.5rem; font-family: var(--font-mono); font-size: 0.72em; color: rgba(28,28,28,0.25); }
+      .table-wrapper.card-mode td { padding: 0.35rem 0.5rem; border-bottom: none; font-size: 0.88em; }
+      .table-wrapper.card-mode td:first-child { font-weight: 600; font-size: 0.92em; border-bottom: 1px solid rgba(28,28,28,0.08); padding-bottom: 0.4rem; margin-bottom: 0.2rem; }
+
+      /* Table view toggle button */
+      .table-view-toggle {
+        display: inline-block;
+        margin-bottom: 0.4rem;
+        padding: 0.25rem 0.6rem;
+        font-size: 0.75em;
+        font-family: var(--font-mono);
+        background: rgba(28,28,28,0.06);
+        border: 1px solid rgba(28,28,28,0.15);
+        border-radius: 4px;
+        cursor: pointer;
+        color: rgba(28,28,28,0.6);
+        user-select: none;
       }
     }
 
@@ -554,9 +689,9 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 26px;
-      height: 26px;
-      border-radius: 4px;
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
       text-decoration: none;
       font-size: 0.7em;
       font-weight: 700;
@@ -625,7 +760,7 @@
       cursor: pointer;
       border-radius: 4px;
       box-shadow: 2px 2px 0 var(--blue);
-      transition: all 0.15s ease;
+      transition: opacity 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease, background-color 0.15s ease;
       opacity: 0.7;
     }
     .sticky-nav ~ .copy-md-btn {
@@ -636,9 +771,120 @@
       box-shadow: 3px 3px 0 var(--blue);
       transform: translate(-1px, -1px);
     }
+    .copy-md-btn:active {
+      transform: scale(0.96);
+      box-shadow: 1px 1px 0 var(--blue);
+    }
     .copy-md-btn.copied {
       background: var(--green);
       box-shadow: 2px 2px 0 var(--green);
+    }
+
+    .email-date-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 0.25rem 0 0.5rem;
+    }
+    .email-date-row p {
+      margin: 0;
+    }
+    .copy-email-btn {
+      background: transparent;
+      color: var(--blue);
+      border: 1px solid currentColor;
+      padding: 0.2rem 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.68em;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.15s ease;
+      opacity: 0.65;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .copy-email-btn:hover {
+      opacity: 1;
+      background: var(--blue);
+      color: var(--paper);
+    }
+    .copy-email-btn.copied {
+      background: var(--green);
+      border-color: var(--green);
+      color: var(--paper);
+      opacity: 1;
+    }
+
+    /* Floating TOC sidebar */
+    #floating-toc {
+      position: fixed;
+      top: 50%;
+      left: 1.25rem;
+      transform: translateY(-50%);
+      max-height: 80vh;
+      overflow-y: auto;
+      width: 190px;
+      background: rgba(247, 243, 237, 0.92);
+      border: 1px solid rgba(28, 28, 28, 0.1);
+      border-radius: 6px;
+      padding: 0.6rem 0;
+      z-index: 500;
+      backdrop-filter: blur(6px);
+      box-shadow: 2px 2px 0 rgba(69, 123, 157, 0.15);
+      display: none;
+    }
+    #floating-toc.visible { display: block; }
+    #floating-toc a {
+      display: block;
+      padding: 0.25rem 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.68em;
+      color: var(--ink);
+      text-decoration: none;
+      opacity: 0.55;
+      line-height: 1.35;
+      border-left: 2px solid transparent;
+      transition: opacity 0.12s, border-color 0.12s, background 0.12s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #floating-toc a:hover { opacity: 0.9; background: rgba(69,123,157,0.06); }
+    #floating-toc a.active {
+      opacity: 1;
+      border-left-color: var(--blue);
+      color: var(--blue);
+      background: rgba(69,123,157,0.06);
+    }
+    @media (max-width: 1300px) { #floating-toc { display: none !important; } }
+    /* Wide pages: slim the floating TOC, expand to full width on hover */
+    body.wide #floating-toc {
+      width: 120px;
+      transition: width 0.18s ease;
+    }
+    body.wide #floating-toc:hover { width: 190px; }
+    /* Collapsible h3 sections */
+    .collapsible-toggle {
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .collapsible-toggle .toggle-icon {
+      font-family: var(--font-mono);
+      font-size: 0.75em;
+      font-weight: normal;
+      color: var(--red);
+      flex-shrink: 0;
+      margin-left: 0.75rem;
+    }
+    .collapsible-body {
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+    }
+    .collapsible-body.collapsed {
+      max-height: 0 !important;
     }
   </style>
 </head>
@@ -720,6 +966,27 @@
         });
       });
     })();
+
+    // Mobile table view toggle (scroll vs card)
+    (function() {
+      if (window.innerWidth > 600) return;
+      var wrappers = document.querySelectorAll('.table-wrapper');
+      wrappers.forEach(function(wrapper, idx) {
+        var key = 'table-view-' + window.location.pathname + '-' + idx;
+        var btn = document.createElement('button');
+        btn.className = 'table-view-toggle';
+        var isCard = localStorage.getItem(key) === 'card';
+        if (isCard) wrapper.classList.add('card-mode');
+        btn.textContent = isCard ? '⇔ Scroll view' : '⬜ Card view';
+        btn.addEventListener('click', function() {
+          wrapper.classList.toggle('card-mode');
+          var nowCard = wrapper.classList.contains('card-mode');
+          localStorage.setItem(key, nowCard ? 'card' : 'scroll');
+          btn.textContent = nowCard ? '⇔ Scroll view' : '⬜ Card view';
+        });
+        wrapper.parentNode.insertBefore(btn, wrapper);
+      });
+    })();
   </script>
   <script>
     function copyMarkdown(btn) {
@@ -758,6 +1025,101 @@
         });
       }
     });
+  </script>
+  <script>
+    function copyEmailMd(btn) {
+      var md = btn.getAttribute('data-md');
+      navigator.clipboard.writeText(md.trim()).then(function() {
+        var orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = orig;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+  <script>
+    (function() {
+      var headings = Array.from(document.querySelectorAll('#editable-content h2'));
+      if (headings.length < 4) return;
+
+      var toc = document.createElement('nav');
+      toc.id = 'floating-toc';
+      headings.forEach(function(h) {
+        var a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.textContent;
+        toc.appendChild(a);
+      });
+      document.body.appendChild(toc);
+      toc.classList.add('visible');
+
+      var links = toc.querySelectorAll('a');
+      var activeIdx = 0;
+
+      function setActive(idx) {
+        links.forEach(function(l) { l.classList.remove('active'); });
+        if (links[idx]) {
+          links[idx].classList.add('active');
+          // Scroll the TOC to keep active link in view
+          var linkTop = links[idx].offsetTop;
+          var tocH = toc.clientHeight;
+          if (linkTop < toc.scrollTop || linkTop > toc.scrollTop + tocH - 30) {
+            toc.scrollTop = linkTop - tocH / 2;
+          }
+        }
+      }
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var idx = headings.indexOf(entry.target);
+            if (idx !== -1) { activeIdx = idx; setActive(idx); }
+          }
+        });
+      }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
+
+      headings.forEach(function(h) { observer.observe(h); });
+      setActive(0);
+    })();
+  </script>
+  <script>
+    (function() {
+      var h3s = document.querySelectorAll('#editable-content h3');
+      if (!h3s.length) return;
+      var pageSlug = document.title.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+      h3s.forEach(function(h3) {
+        var h3Slug = (h3.id || h3.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+        var key = 'pretty-page-h3-' + pageSlug + '-' + h3Slug;
+        var icon = document.createElement('span');
+        icon.className = 'toggle-icon';
+        h3.appendChild(icon);
+        var body = document.createElement('div');
+        body.className = 'collapsible-body';
+        var next = h3.nextElementSibling;
+        var nodes = [];
+        while (next && !['H3', 'H2', 'HR'].includes(next.tagName)) {
+          var tmp = next.nextElementSibling;
+          nodes.push(next);
+          next = tmp;
+        }
+        nodes.forEach(function(n) { body.appendChild(n); });
+        h3.parentNode.insertBefore(body, h3.nextSibling);
+        body.style.maxHeight = body.scrollHeight + 'px';
+        h3.classList.add('collapsible-toggle');
+        var isCollapsed = localStorage.getItem(key) === 'collapsed';
+        if (isCollapsed) { body.classList.add('collapsed'); icon.textContent = '[+]'; }
+        else { icon.textContent = '[-]'; }
+        h3.addEventListener('click', function() {
+          var isNowCollapsed = body.classList.toggle('collapsed');
+          if (!isNowCollapsed) body.style.maxHeight = body.scrollHeight + 'px';
+          icon.textContent = isNowCollapsed ? '[+]' : '[-]';
+          localStorage.setItem(key, isNowCollapsed ? 'collapsed' : 'open');
+        });
+      });
+    })();
   </script>
 </body>
 </html>
