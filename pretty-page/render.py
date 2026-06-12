@@ -3,6 +3,7 @@
 import sys
 import re
 import os
+import html as html_mod
 
 def md_to_html(md_text):
     """Simple markdown to HTML converter."""
@@ -120,6 +121,14 @@ def md_to_html(md_text):
 
         stripped = line.strip()
 
+        # Raw HTML passthrough: block-level lines that start with a tag are
+        # emitted as-is (enables gmail-card and other template components)
+        if re.match(r'^</?[a-zA-Z][a-zA-Z0-9-]*(\s|>|/)', stripped):
+            flush_list()
+            html_parts.append(line)
+            i += 1
+            continue
+
         checkbox_match = re.match(r'^[\-\*]\s+\[([ xX])\]\s+(.*)', stripped)
         if checkbox_match:
             if list_type != 'checklist':
@@ -210,7 +219,7 @@ def parse_table(lines, start):
     cells = [c.strip() for c in header.split('|')[1:-1]]
     sep_idx = start + 1
 
-    html = '<table><thead><tr>'
+    html = '<div class="table-wrapper"><table><thead><tr>'
     for cell in cells:
         html += f'<th>{inline_format(cell)}</th>'
     html += '</tr></thead><tbody>'
@@ -224,7 +233,7 @@ def parse_table(lines, start):
         html += '</tr>'
         i += 1
 
-    html += '</tbody></table>'
+    html += '</tbody></table></div>'
     return (html, i)
 
 
@@ -239,7 +248,7 @@ def build_nav_html(nav_items):
     return f'<nav class="sticky-nav">{" ".join(links)}</nav>\n<div class="nav-spacer"></div>'
 
 
-def render(md_path, title=None, slug=None, nav=None):
+def render(md_path, title=None, slug=None, nav=None, wide=False):
     """Render markdown file to HTML using the template."""
     with open(md_path) as f:
         md_text = f.read()
@@ -285,6 +294,26 @@ def render(md_path, title=None, slug=None, nav=None):
 
     content_html = md_to_html(md_text)
 
+    # Inject back-to-top links before each <hr> on archive-style pages (3+ HRs)
+    hr_count = content_html.count('<hr>')
+    if hr_count >= 3:
+        back_to_top = '<div class="back-to-top"><a href="#top">↑ Back to top</a></div>'
+        content_html = content_html.replace('<hr>', back_to_top + '<hr>')
+        content_html = '<span id="top"></span>\n' + content_html
+
+        # Inject per-email copy button next to each Date: line
+        raw_sections = re.split(r'\n---\n|\n\*\*\*\n', md_text)
+        email_sections = raw_sections[1:]  # section[0] is the schedule header
+        date_idx = [0]
+        def replace_date_line(match):
+            idx = date_idx[0]
+            date_idx[0] += 1
+            section_md = email_sections[idx] if idx < len(email_sections) else ''
+            escaped_md = html_mod.escape(section_md, quote=True)
+            copy_btn = f'<button class="copy-email-btn" onclick="copyEmailMd(this)" data-md="{escaped_md}">Copy</button>'
+            return f'<div class="email-date-row">{match.group(0)}{copy_btn}</div>'
+        content_html = re.sub(r'<p><em>Date:.*?</em></p>', replace_date_line, content_html)
+
     # Wrap pre-section metadata in a styled block
     # Detect consecutive <p><strong>Label:</strong>...</p> lines at the start of content
     lines = content_html.split('\n')
@@ -317,7 +346,7 @@ def render(md_path, title=None, slug=None, nav=None):
             # Extract the first line as the summary, rest as collapsible content
             first_line = meta_lines[0]
             remaining = '\n'.join(meta_lines[1:])
-            content_html = f'<div class="metadata"><details class="toc-collapse" open><summary>{first_line}</summary>{remaining}</details></div>\n{rest}'
+            content_html = f'<div class="metadata"><details class="toc-collapse"><summary>{first_line}</summary>{remaining}</details></div>\n{rest}'
         else:
             content_html = f'<div class="metadata">{meta_block}</div>\n{rest}'
     else:
@@ -353,7 +382,7 @@ def render(md_path, title=None, slug=None, nav=None):
             for _ in range(current_level - 2):
                 toc_parts.append('</ul></li>')
             toc_inner = '\n'.join(toc_parts)
-            toc_html = f'<div class="metadata"><details class="toc-collapse" open><summary><p><strong>On this page:</strong></p></summary><ul class="auto-toc">\n{toc_inner}\n</ul></details></div>\n'
+            toc_html = f'<div class="metadata"><details class="toc-collapse"><summary><p><strong>On this page:</strong></p></summary><ul class="auto-toc">\n{toc_inner}\n</ul></details></div>\n'
             content_html = toc_html + content_html
 
     template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'template.html')
@@ -361,7 +390,6 @@ def render(md_path, title=None, slug=None, nav=None):
         template = f.read()
 
     # Embed raw markdown for copy-to-clipboard
-    import html as html_mod
     raw_md_escaped = html_mod.escape(md_text)
 
     # Restore preserved HTML blocks (iframes, embeds)
@@ -371,12 +399,15 @@ def render(md_path, title=None, slug=None, nav=None):
         content_html = content_html.replace(f'<p>{key}</p>', original_html)
         content_html = content_html.replace(key, original_html)
 
+    if wide:
+        template = template.replace('max-width: 720px;', 'max-width: 1100px;', 1)
+        template = template.replace('<body>', '<body class="wide">', 1)
+
     html = template.replace('{{TITLE}}', title)
     html = html.replace('{{NAV}}', build_nav_html(nav) if nav else '')
     html = html.replace('{{CONTENT}}', content_html)
     html = html.replace('{{RAW_MARKDOWN}}', raw_md_escaped)
-    footer = os.environ.get('PRETTY_PAGE_FOOTER', '')
-    html = html.replace('{{FOOTER}}', footer)
+    html = html.replace('{{FOOTER}}', 'Prepared by <a href="https://jfdi.bot">Andy</a>')
 
     output_path = f'/tmp/pretty-page-{slug}.html'
     with open(output_path, 'w') as f:
@@ -388,7 +419,7 @@ def render(md_path, title=None, slug=None, nav=None):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print("Usage: render.py <markdown-file> [--title 'Title'] [--slug slug]", file=sys.stderr)
+        print("Usage: render.py <markdown-file> [--title 'Title'] [--slug slug] [--nav JSON] [--wide]", file=sys.stderr)
         sys.exit(1)
 
     import json as json_mod
@@ -397,6 +428,7 @@ if __name__ == '__main__':
     title = None
     slug = None
     nav = None
+    wide = False
 
     i = 2
     while i < len(sys.argv):
@@ -409,7 +441,10 @@ if __name__ == '__main__':
         elif sys.argv[i] == '--nav' and i + 1 < len(sys.argv):
             nav = json_mod.loads(sys.argv[i + 1])
             i += 2
+        elif sys.argv[i] == '--wide':
+            wide = True
+            i += 1
         else:
             i += 1
 
-    render(md_path, title, slug, nav)
+    render(md_path, title, slug, nav, wide)
