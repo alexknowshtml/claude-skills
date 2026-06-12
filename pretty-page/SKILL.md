@@ -7,6 +7,7 @@ description: Convert markdown to a beautifully styled, shareable HTML page and u
 
 Convert markdown content into a beautifully styled, shareable HTML page using the JFDI design system (Risograph-inspired aesthetic). Renders locally and uploads to any S3-compatible host.
 
+
 ## Usage
 
 ```
@@ -15,12 +16,36 @@ Convert markdown content into a beautifully styled, shareable HTML page using th
 
 **`--wide`** — widens the content column from 720px to 1100px. Use for table-heavy pages so wide tables render without horizontal scrolling.
 
+
 ## What It Does
 
 1. Takes markdown content (file path or inline text)
 2. Converts to styled HTML using `render.py` and `template.html`
 3. Uploads to S3-compatible storage via `upload.py`
 4. Returns a shareable public URL
+
+
+## When to Use
+
+Instead of posting raw `.md` files or sending markdown attachments, use this to create a readable, styled page that anyone can open in a browser.
+
+Good for:
+- Meeting notes with action item checklists
+- Analysis reports
+- Research summaries
+- Blog post drafts for review
+- Any markdown content that needs to be shared and read comfortably
+- System architecture docs with interactive animations
+
+
+## Source Sync Guardrails
+
+**The MD is always the source of truth. The pretty-page is a rendered artifact.**
+
+1. **MD-first workflow** — If the user asks to update content on a pretty-page, always write the change to the source `.md` first, then regenerate.
+2. **Regenerate = overwrite** — The upload always uses the same slug derived from the source file, so regenerating overwrites the previous version at the same URL.
+3. **Never guess URL slugs** — When adding links to source `.md` files, always verify URLs exist before writing them.
+
 
 ## Setup
 
@@ -49,6 +74,7 @@ export S3_PREFIX=public/
 export S3_PUBLIC_BASE_URL=https://cdn.yourdomain.com
 ```
 
+
 ## Template
 
 The template uses the JFDI design system:
@@ -56,6 +82,7 @@ The template uses the JFDI design system:
 - **Fonts:** Fraunces (headings) + DM Sans (body) + DM Mono (code)
 - **Colors:** Cream paper (#F7F3ED), dark ink (#1C1C1C), red (#E63946), blue (#457B9D), yellow (#F4A261), green (#2A9D8F)
 - **Features:** Paper noise texture, offset box-shadows on blockquotes, styled code blocks, responsive layout
+
 
 ## Interactive Features
 
@@ -92,6 +119,7 @@ All h2/h3/h4 headings get slug-based `id` attributes for in-page linking. `scrol
 ### Metadata Box
 Consecutive `**Bold:**` lines at the start of content are wrapped in a styled `.metadata` div. First line renders slightly larger for visual hierarchy. Lists following bold labels are included in the box.
 
+
 ## Blockquote Cards (Person/Item Cards)
 
 Use blockquotes to create visually distinct cards — great for staff rosters, contact profiles, or any list of items that need their own box.
@@ -112,9 +140,11 @@ Use blockquotes to create visually distinct cards — great for staff rosters, c
 - Blank `>` line separates paragraphs within the same card
 - Blank line (no `>`) between cards creates separate blockquote boxes
 
+
 ## Horizontal Rules and Back-to-Top Links
 
 Every `---` in the markdown generates a styled `back-to-top` link + `<hr>` in the rendered HTML on archive-style pages (3+ HRs). **Use `---` sparingly** — only between major `##` sections.
+
 
 ## Output Filename Behavior
 
@@ -124,6 +154,7 @@ The render script derives its output filename from the document's H1 slug. Use `
 python3 render.py source.md --slug my-slug
 # → writes /tmp/pretty-page-my-slug.html
 ```
+
 
 ## Raw HTML Passthrough & Gmail-Style Email Cards
 
@@ -153,11 +184,13 @@ The template ships CSS for a Gmail-style email card (`.gmail-card`):
 
 **Rules:** every line of the block must start with `<` (passthrough is line-based); body content must be pre-converted to HTML (`<p>`, `<ul>/<li>`, `<a>`).
 
+
 ## Interactive Animations
 
 For system documentation, architecture explanations, or any page where the **sequence or timing** is the point, you can add interactive JS animations. These are hand-authored in HTML rather than generated from markdown — build the page as a standalone `.html` file, use the JFDI design system CSS variables (`--paper`, `--ink`, `--red`, `--blue`, `--yellow`, `--green`) and fonts, then upload directly.
 
 **Key JS rule:** All choreographed animations use `async/await` + `const sleep = ms => new Promise(r => setTimeout(r, ms))`. Never callback chains.
+
 
 ## Footer Customization
 
@@ -168,6 +201,7 @@ html = html.replace('{{FOOTER}}', 'Prepared by <a href="https://example.com">You
 ```
 
 Edit this line to personalize the footer for your deployment.
+
 
 ## Implementation
 
@@ -188,23 +222,3 @@ Edit this line to personalize the footer for your deployment.
    ```
 6. Use `upload.py` to upload and get a public URL
 7. Return the URL
-
-## Source Sync Guardrails
-
-**The MD is always the source of truth. The pretty-page is a rendered artifact.**
-
-1. **MD-first workflow** — If the user asks to update content on a pretty-page, always write the change to the source `.md` first, then regenerate.
-2. **Regenerate = overwrite** — The upload always uses the same slug derived from the source file, so regenerating overwrites the previous version at the same URL.
-3. **Never guess URL slugs** — When adding links to source `.md` files, always verify URLs exist before writing them.
-
-## When to Use
-
-Instead of posting raw `.md` files or sending markdown attachments, use this to create a readable, styled page that anyone can open in a browser.
-
-Good for:
-- Meeting notes with action item checklists
-- Analysis reports
-- Research summaries
-- Blog post drafts for review
-- Any markdown content that needs to be shared and read comfortably
-- System architecture docs with interactive animations
